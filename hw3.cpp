@@ -4,9 +4,9 @@
 #include <math.h>
 #include <iostream>
 
-
-
-int main(int argc, char[] argv[]) {
+double distSquared(std::pair<double, double> coords);
+std::pair<double, double> throwDart();
+int main(int argc, char* argv[]) {
     long long int total;
     int commSz;
     int myRank;
@@ -34,10 +34,12 @@ int main(int argc, char[] argv[]) {
                 numHits += 1;
         }
     }
-    MPI_Reduce(&numHits, &totalHits, 1, MPI_LONG_LONG_INT, MPI_Sum, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&numHits, &totalHits, 1, MPI_LONG_LONG_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    if (myRank == 0)
+        std::cout << "Our predicted value for PI is the following: " << 4.0 * ((double) totalHits / \
+                                                                               (double) (numIterations * (commSz - 1))) << std::endl;
+
     MPI_Finalize();
-    std::cout << "Our predicted value for PI is the following: " << 4.0 * ((double) totalHits / \
-                                                                           (double) (numIterations * (commSz - 1))) << std::endl;
 }
 
 
